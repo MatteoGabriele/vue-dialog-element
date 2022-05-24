@@ -1,0 +1,25 @@
+{
+  "name": "vue-dialog-element",
+  "version": "0.1.0",
+  "main": "./dist/vue-dialog-element.umd.js",
+  "module": "./dist/vue-dialog-element.es.js",
+  "unpkg": "./dist/vue-dialog-element.umd.js",
+  "jsdelivr": "./dist/vue-dialog-element.umd.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development vite build --watch",
+    "build": "cross-env NODE_ENV=production vite build",
+    "preview": "vite preview",
+    "prepublish": "yarn build"
+  },
+  "dependencies": {
+    "vue": "^3.2.25"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^2.3.3",
+    "cross-env": "^7.0.3",
+    "vite": "^2.9.9"
+  }
+}
