@@ -1,6 +1,6 @@
 {
   "name": "vue-dialog-element",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "./dist/vue-dialog-element.umd.js",
   "module": "./dist/vue-dialog-element.es.js",
   "unpkg": "./dist/vue-dialog-element.umd.js",
