@@ -1,51 +1,50 @@
 <script setup>
 import { useDialog } from "../composables/useDialog";
-import DialogCloseIcon from "../DialogCloseIcon";
 import { DATA_ATTR } from "../constants";
 
 const props = defineProps({
-  name: String,
-  open: {
-    type: Boolean,
-    default: false,
+  name: {
+    type: [String, Number],
+    required: true,
   },
 });
 
-const { closeDialog } = useDialog(props.name);
+const { closeDialog, dialogName, isDialogOpen } = useDialog(props.name);
 </script>
 
 <template>
-  <dialog :open="open" v-bind="{ [DATA_ATTR]: name }" class="v-dialog-element">
+  <dialog v-bind="{ [DATA_ATTR]: dialogName }" class="v-dialog-element">
     <header>
       <slot name="header" :close="closeDialog">
         <button class="v-dialog-element-button-close" @click="closeDialog">
-          <slot name="close-icon">
-            <DialogCloseIcon />
-          </slot>
+          <slot name="close-icon">&times;</slot>
         </button>
       </slot>
     </header>
-    <slot />
+    <slot v-if="isDialogOpen"></slot>
   </dialog>
 </template>
 
 <style>
 .v-dialog-element {
-  max-width: 800px;
-  padding: 20px;
+  max-width: 1080px;
+  width: calc(100vw - 20px);
   box-sizing: border-box;
+  border: none;
 }
 
 .v-dialog-element-button-close {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 0px;
+  right: 0px;
   border: none;
-  background-color: transparent;
+  background: transparent;
   padding: 0;
   margin: 0;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   cursor: pointer;
+  font-size: 22px;
+  outline: none;
 }
 </style>

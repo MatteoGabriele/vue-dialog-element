@@ -1,5 +1,8 @@
-import { onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref } from "vue";
 import { DATA_ATTR } from "../constants";
+
+const DIALOG_STATUS_OPEN = "open";
+const DIALOG_STATUS_CLOSED = "closed";
 
 const state = reactive({
   dialogs: [],
@@ -12,11 +15,24 @@ const generateDialogId = () => {
 };
 
 const addDialog = (name) => {
-  if (state.dialogs.includes(name)) {
+  if (state.dialogs.some((dialog) => dialog.name === name)) {
     return;
   }
 
-  state.dialogs.push(name);
+  state.dialogs.push({
+    name,
+    status: DIALOG_STATUS_CLOSED,
+  });
+};
+
+const setDialogStatus = (name, status) => {
+  const dialogItem = state.dialogs.find((dialog) => dialog.name === name);
+
+  if (!dialogItem) {
+    return;
+  }
+
+  dialogItem.status = status;
 };
 
 const getDialogElement = (id) => {
@@ -24,23 +40,31 @@ const getDialogElement = (id) => {
 };
 
 export const useDialog = (name) => {
-  const dialogId = name || generateDialogId();
-  const isDialogOpen = ref(false);
+  const dialogName = ref(name || generateDialogId());
   const dialog = ref(null);
+  const currentDialogItem = computed(() => {
+    return state.dialogs.find((dialog) => dialog.name === dialogName.value);
+  });
+  const isDialogOpen = computed(() => {
+    return (
+      currentDialogItem.value &&
+      currentDialogItem.value.status === DIALOG_STATUS_OPEN
+    );
+  });
 
-  addDialog(dialogId);
+  addDialog(dialogName.value);
 
   onMounted(() => {
-    dialog.value = getDialogElement(dialogId);
+    dialog.value = getDialogElement(dialogName.value);
 
     dialog.value.addEventListener("close", () => {
-      isDialogOpen.value = false;
+      setDialogStatus(dialogName.value, DIALOG_STATUS_CLOSED);
     });
   });
 
   const openDialog = () => {
     dialog.value.showModal();
-    isDialogOpen.value = true;
+    setDialogStatus(dialogName.value, DIALOG_STATUS_OPEN);
   };
 
   const closeDialog = () => {
@@ -48,8 +72,9 @@ export const useDialog = (name) => {
   };
 
   return {
+    dialogs: state.dialogs,
     isDialogOpen,
-    dialogId,
+    dialogName,
     openDialog,
     closeDialog,
   };
